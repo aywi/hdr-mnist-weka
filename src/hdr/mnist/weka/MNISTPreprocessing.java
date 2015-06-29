@@ -10,11 +10,6 @@ import java.io.PrintStream;
 import javax.imageio.ImageIO;
 
 public class MNISTPreprocessing {
-	/**
-	 * @param args
-	 *            args[0]: label file; args[1]: data file.
-	 * @throws IOException
-	 */
 	public static void main(String[] args) throws IOException {
 		String name = "train";
 		int numOutputImages = 100;
@@ -74,6 +69,7 @@ public class MNISTPreprocessing {
 								image[colIdx][rowIdx] * 0x010101);
 				}
 			}
+			numImagesRead++;
 			int[][] process = new int[numCols / 2][numRows / 2];
 			for (int rowIdx = 0; rowIdx < numCols / 2; rowIdx++) {
 				for (int colIdx = 0; colIdx < numRows / 2; colIdx++) {
@@ -90,7 +86,6 @@ public class MNISTPreprocessing {
 								process[colIdx][rowIdx] * 0xffffff);
 				}
 			}
-			numImagesRead++;
 			if (numLabelsRead % 10 == 0) {
 				System.out.print(".");
 			}
@@ -102,7 +97,8 @@ public class MNISTPreprocessing {
 				long seconds = (elapsed / 1000) - (minutes * 60);
 				System.out.println("  " + minutes + " m " + seconds + " s ");
 			}
-			parray.println(label);
+			if (numLabelsRead == numImagesRead)
+				parray.println(label);
 			if (numLabelsRead < numOutputImages) {
 				File originalimg = new File("data/" + name + "/in/"
 						+ numLabelsRead + ".bmp");
@@ -118,6 +114,8 @@ public class MNISTPreprocessing {
 				ImageIO.write(processed, "BMP", processedimg);
 			}
 		}
+		labels.close();
+		images.close();
 		array.close();
 		System.out.println();
 		long end = System.currentTimeMillis();
