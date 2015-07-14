@@ -11,24 +11,21 @@ import javax.imageio.ImageIO;
 
 public class MNISTPreprocessing {
 	public static void main(String[] args) throws IOException {
-		String name = "train";
-		int numOutputImages = 100;
-		DataInputStream labels = new DataInputStream(new FileInputStream(
-				"data/" + name + "-labels.idx1-ubyte"));
-		DataInputStream images = new DataInputStream(new FileInputStream(
-				"data/" + name + "-images.idx3-ubyte"));
-		FileOutputStream array = new FileOutputStream(name + ".arff");
-		PrintStream parray = new PrintStream(array);
+		String dataset = "train"; // "train" for the training set and "t10k" for the test set.
+		int firstExample = 5001; // Index of the first output example.
+		int lastExample = 5100; // Index of the last output example.
+		int meanFilterSize = 3; // Size of the mean filter.
+		long start = System.currentTimeMillis();
+		DataInputStream labels = new DataInputStream(new FileInputStream("data/" + dataset + "-labels.idx1-ubyte"));
+		DataInputStream images = new DataInputStream(new FileInputStream("data/" + dataset + "-images.idx3-ubyte"));
 		int magicNumber = labels.readInt();
 		if (magicNumber != 2049) {
-			System.err.println("Label file has wrong magic number: "
-					+ magicNumber + " (should be 2049)");
+			System.err.println("The label file has wrong magic number: " + magicNumber + " (should be 2049)");
 			System.exit(0);
 		}
 		magicNumber = images.readInt();
 		if (magicNumber != 2051) {
-			System.err.println("Image file has wrong magic number: "
-					+ magicNumber + " (should be 2051)");
+			System.err.println("The image file has wrong magic number: " + magicNumber + " (should be 2051)");
 			System.exit(0);
 		}
 		int numLabels = labels.readInt();
@@ -36,93 +33,79 @@ public class MNISTPreprocessing {
 		int numRows = images.readInt();
 		int numCols = images.readInt();
 		if (numLabels != numImages) {
-			System.err
-					.println("Image file and label file do not contain the same number of entries.");
-			System.err.println("  Label file contains: " + numLabels);
-			System.err.println("  Image file contains: " + numImages);
+			System.err.println("The label file and the image file do not contain the same number of items.");
+			System.err.println("The label file contains: " + numLabels);
+			System.err.println("The image file contains: " + numImages);
 			System.exit(0);
 		}
-		long start = System.currentTimeMillis();
 		int numLabelsRead = 0;
 		int numImagesRead = 0;
-		parray.println("@relation " + name);
-		parray.println();
-		for (int pix = 0; pix < (numCols / 2) * (numRows / 2); pix++) {
-			parray.println("@attribute pix" + pix + " {0,1}");
+		FileOutputStream arff = new FileOutputStream("data/" + dataset + ".arff");
+		PrintStream toArff = new PrintStream(arff);
+		toArff.println("@relation " + dataset);
+		toArff.println();
+		for (int pixel = 1; pixel <= numRows * numCols; pixel++) {
+			toArff.println("@attribute pixel" + pixel + " {0,1}");
 		}
-		parray.println("@attribute label {0,1,2,3,4,5,6,7,8,9}");
-		parray.println();
-		parray.println("@data");
-		BufferedImage origin = new BufferedImage(numCols, numRows,
-				BufferedImage.TYPE_BYTE_GRAY);
-		BufferedImage processed = new BufferedImage(numCols / 2, numRows / 2,
-				BufferedImage.TYPE_BYTE_BINARY);
+		toArff.println("@attribute label {0,1,2,3,4,5,6,7,8,9}");
+		toArff.println();
+		toArff.println("@data");
+		BufferedImage originalExample = new BufferedImage(numCols, numRows, BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage processedExample = new BufferedImage(numCols, numRows, BufferedImage.TYPE_BYTE_BINARY);
 		while (labels.available() > 0 && numLabelsRead < numLabels) {
 			byte label = labels.readByte();
 			numLabelsRead++;
-			int[][] image = new int[numCols][numRows];
-			for (int rowIdx = 0; rowIdx < numCols; rowIdx++) {
-				for (int colIdx = 0; colIdx < numRows; colIdx++) {
-					image[colIdx][rowIdx] = images.readUnsignedByte();
-					if (numLabelsRead < numOutputImages)
-						origin.setRGB(colIdx, rowIdx,
-								image[colIdx][rowIdx] * 0x010101);
+			int[][] image = new int[numRows][numCols];
+			for (int row = 0; row < image.length; row++) {
+				for (int col = 0; col < image[row].length; col++) {
+					image[row][col] = images.readUnsignedByte();
+					if (numLabelsRead >= firstExample && numLabelsRead <= lastExample)
+						originalExample.setRGB(col, row, 0xffffffff - image[row][col] * 0x010101);
 				}
 			}
 			numImagesRead++;
-			int[][] process = new int[numCols / 2][numRows / 2];
-			for (int rowIdx = 0; rowIdx < numCols / 2; rowIdx++) {
-				for (int colIdx = 0; colIdx < numRows / 2; colIdx++) {
-					if (image[colIdx * 2][rowIdx * 2]
-							+ image[colIdx * 2 + 1][rowIdx * 2]
-							+ image[colIdx * 2][rowIdx * 2 + 1]
-							+ image[colIdx * 2 + 1][rowIdx * 2 + 1] > 509)
-						process[colIdx][rowIdx] = 1;
-					else
-						process[colIdx][rowIdx] = 0;
-					parray.print(process[colIdx][rowIdx] + ",");
-					if (numLabelsRead < numOutputImages)
-						processed.setRGB(colIdx, rowIdx,
-								process[colIdx][rowIdx] * 0xffffff);
+			int[][] blurred = MeanFilter.blur(image, numRows, numCols, meanFilterSize);
+			int[][] binarized = OtsuThresholding.binarize(blurred, numRows, numCols);
+			for (int row = 0; row < binarized.length; row++) {
+				for (int col = 0; col < binarized[row].length; col++) {
+					toArff.print(binarized[row][col] + ",");
+					if (numLabelsRead >= firstExample && numLabelsRead <= lastExample)
+						processedExample.setRGB(col, row, 0xffffffff - binarized[row][col] * 0xffffff);
 				}
 			}
-			if (numLabelsRead % 10 == 0) {
-				System.out.print(".");
+			if (numLabelsRead == numImagesRead)
+				toArff.println(label);
+			if (numLabelsRead >= firstExample && numLabelsRead <= lastExample) {
+				File originalOutput = new File("data/examples/" + dataset + "_original/" + numLabelsRead + ".bmp");
+				if (!originalOutput.getParentFile().exists()) {
+					originalOutput.getParentFile().mkdirs();
+				}
+				ImageIO.write(originalExample, "BMP", originalOutput);
+				File processedOutput = new File("data/examples/" + dataset + "_processed/" + numLabelsRead + ".bmp");
+				if (!processedOutput.getParentFile().exists()) {
+					processedOutput.getParentFile().mkdirs();
+				}
+				ImageIO.write(processedExample, "BMP", processedOutput);
 			}
-			if ((numLabelsRead % 800) == 0) {
-				System.out.print(" " + numLabelsRead + " / " + numLabels);
+			if (numLabelsRead % 20 == 0) {
+				System.out.print(">");
+			}
+			if (numLabelsRead % 1000 == 0) {
+				System.out.print(" " + numLabelsRead + "/" + numLabels);
 				long end = System.currentTimeMillis();
 				long elapsed = end - start;
 				long minutes = elapsed / (1000 * 60);
-				long seconds = (elapsed / 1000) - (minutes * 60);
-				System.out.println("  " + minutes + " m " + seconds + " s ");
-			}
-			if (numLabelsRead == numImagesRead)
-				parray.println(label);
-			if (numLabelsRead < numOutputImages) {
-				File originalimg = new File("data/" + name + "/in/"
-						+ numLabelsRead + ".bmp");
-				if (!originalimg.getParentFile().exists()) {
-					originalimg.getParentFile().mkdirs();
-				}
-				ImageIO.write(origin, "BMP", originalimg);
-				File processedimg = new File("data/" + name + "/out/"
-						+ numLabelsRead + ".bmp");
-				if (!processedimg.getParentFile().exists()) {
-					processedimg.getParentFile().mkdirs();
-				}
-				ImageIO.write(processed, "BMP", processedimg);
+				long seconds = elapsed / 1000 - minutes * 60;
+				System.out.println(" " + minutes + "'" + seconds + "''");
 			}
 		}
 		labels.close();
 		images.close();
-		array.close();
-		System.out.println();
+		arff.close();
 		long end = System.currentTimeMillis();
 		long elapsed = end - start;
 		long minutes = elapsed / (1000 * 60);
-		long seconds = (elapsed / 1000) - (minutes * 60);
-		System.out.println("Read " + numLabelsRead + " samples in " + minutes
-				+ " m " + seconds + " s ");
+		long seconds = elapsed / 1000 - minutes * 60;
+		System.out.println("Preprocessed " + numLabelsRead + " items in " + minutes + "'" + seconds + "''.");
 	}
 }

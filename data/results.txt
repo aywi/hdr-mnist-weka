@@ -1,0 +1,180 @@
+=== Weka Testing ===
+Instances in Training Set: 60000
+Instances in Test Set: 10000
+=== Naive Bayes ===
+Training Time: 8.918s
+Evaluation Time: 15.072s
+Total Time: 23.99s
+Correctly Classified Instances: 8511
+Incorrectly Classified Instances: 1489
+Total Number of Instances: 10000
+Accuracy: 85.11%
+=== Decision Tree (C4.5) ===
+Training Time: 452.85s
+Evaluation Time: 0.421s
+Total Time: 453.271s
+Correctly Classified Instances: 9104
+Incorrectly Classified Instances: 896
+Total Number of Instances: 10000
+Accuracy: 91.04%
+=== Random Forest (with 10 Trees) ===
+Training Time: 52.653s
+Evaluation Time: 0.515s
+Total Time: 53.168s
+Correctly Classified Instances: 9618
+Incorrectly Classified Instances: 382
+Total Number of Instances: 10000
+Accuracy: 96.18%
+=== Random Forest (with 20 Trees) ===
+Training Time: 103.317s
+Evaluation Time: 1.014s
+Total Time: 104.33099999999999s
+Correctly Classified Instances: 9678
+Incorrectly Classified Instances: 322
+Total Number of Instances: 10000
+Accuracy: 96.78%
+=== Random Forest (with 30 Trees) ===
+Training Time: 155.415s
+Evaluation Time: 1.527s
+Total Time: 156.94199999999998s
+Correctly Classified Instances: 9708
+Incorrectly Classified Instances: 292
+Total Number of Instances: 10000
+Accuracy: 97.08%
+=== Random Forest (with 40 Trees) ===
+Training Time: 204.477s
+Evaluation Time: 2.028s
+Total Time: 206.505s
+Correctly Classified Instances: 9716
+Incorrectly Classified Instances: 284
+Total Number of Instances: 10000
+Accuracy: 97.16%
+=== Random Forest (with 50 Trees) ===
+Training Time: 257.189s
+Evaluation Time: 2.609s
+Total Time: 259.798s
+Correctly Classified Instances: 9731
+Incorrectly Classified Instances: 269
+Total Number of Instances: 10000
+Accuracy: 97.31%
+=== Random Forest (with 60 Trees) ===
+Training Time: 308.325s
+Evaluation Time: 3.337s
+Total Time: 311.662s
+Correctly Classified Instances: 9725
+Incorrectly Classified Instances: 275
+Total Number of Instances: 10000
+Accuracy: 97.25%
+=== Random Forest (with 70 Trees) ===
+Training Time: 374.658s
+Evaluation Time: 3.937s
+Total Time: 378.595s
+Correctly Classified Instances: 9728
+Incorrectly Classified Instances: 272
+Total Number of Instances: 10000
+Accuracy: 97.28%
+=== Random Forest (with 80 Trees) ===
+Training Time: 454.481s
+Evaluation Time: 4.581s
+Total Time: 459.062s
+Correctly Classified Instances: 9737
+Incorrectly Classified Instances: 263
+Total Number of Instances: 10000
+Accuracy: 97.37%
+=== Random Forest (with 90 Trees) ===
+Training Time: 471.634s
+Evaluation Time: 5.44s
+Total Time: 477.074s
+Correctly Classified Instances: 9732
+Incorrectly Classified Instances: 268
+Total Number of Instances: 10000
+Accuracy: 97.32%
+=== Random Forest (with 100 Trees) ===
+Training Time: 549.001s
+Evaluation Time: 6.59s
+Total Time: 555.591s
+Correctly Classified Instances: 9741
+Incorrectly Classified Instances: 259
+Total Number of Instances: 10000
+Accuracy: 97.41%
+=== Random Forest (with 110 Trees) ===
+Training Time: 656.344s
+Evaluation Time: 7.425s
+Total Time: 663.769s
+Correctly Classified Instances: 9743
+Incorrectly Classified Instances: 257
+Total Number of Instances: 10000
+Accuracy: 97.43%
+=== Random Forest (with 120 Trees) ===
+Training Time: 717.106s
+Evaluation Time: 8.701s
+Total Time: 725.807s
+Correctly Classified Instances: 9740
+Incorrectly Classified Instances: 260
+Total Number of Instances: 10000
+Accuracy: 97.4%
+=== Random Forest (with 130 Trees) ===
+Training Time: 782.268s
+Evaluation Time: 8.889s
+Total Time: 791.157s
+Correctly Classified Instances: 9742
+Incorrectly Classified Instances: 258
+Total Number of Instances: 10000
+Accuracy: 97.42%
+=== Random Forest (with 140 Trees) ===
+Training Time: 843.471s
+Evaluation Time: 10.961s
+Total Time: 854.432s
+Correctly Classified Instances: 9740
+Incorrectly Classified Instances: 260
+Total Number of Instances: 10000
+Accuracy: 97.4%
+=== Random Forest (with 150 Trees) ===
+Training Time: 902.99s
+Evaluation Time: 11.53s
+Total Time: 914.52s
+Correctly Classified Instances: 9740
+Incorrectly Classified Instances: 260
+Total Number of Instances: 10000
+Accuracy: 97.4%
+=== Random Forest (with 160 Trees) ===
+Training Time: 1036.793s
+Evaluation Time: 12.599s
+Total Time: 1049.3919999999998s
+Correctly Classified Instances: 9745
+Incorrectly Classified Instances: 255
+Total Number of Instances: 10000
+Accuracy: 97.45%
+=== Random Forest (with 170 Trees) ===
+Training Time: 1136.772s
+Evaluation Time: 11.709s
+Total Time: 1148.481s
+Correctly Classified Instances: 9747
+Incorrectly Classified Instances: 253
+Total Number of Instances: 10000
+Accuracy: 97.47%
+=== Random Forest (with 180 Trees) ===
+Training Time: 1139.912s
+Evaluation Time: 13.112s
+Total Time: 1153.0240000000001s
+Correctly Classified Instances: 9747
+Incorrectly Classified Instances: 253
+Total Number of Instances: 10000
+Accuracy: 97.47%
+=== Random Forest (with 190 Trees) ===
+Training Time: 1142.575s
+Evaluation Time: 13.188s
+Total Time: 1155.7630000000001s
+Correctly Classified Instances: 9746
+Incorrectly Classified Instances: 254
+Total Number of Instances: 10000
+Accuracy: 97.46%
+=== Random Forest (with 200 Trees) ===
+Training Time: 1300.297s
+Evaluation Time: 15.902s
+Total Time: 1316.199s
+Correctly Classified Instances: 9744
+Incorrectly Classified Instances: 256
+Total Number of Instances: 10000
+Accuracy: 97.44%
+
